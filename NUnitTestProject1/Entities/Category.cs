@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NUnitTestProject1
+namespace NUnitTestProject1.Entities
 {
-    public class Todo
+    public class Category
     {
         public int id { get; set; }
-
         public string title { get; set; }
-
-        public bool doneStatus { get; set; }
-
         public string description { get; set; }
 
     }
