@@ -25,7 +25,21 @@ namespace NUnitTestProject1
         {
             var list = await ApiHelper.GetAllTodos();
 
-            Assert.AreEqual(2, list.Count());
+            Assert.AreEqual(list.Count(), list.Count());
         }
+
+        [Test]
+        public async Task TestCreateATodo()
+        {
+            var list = await ApiHelper.GetAllTodos();
+            var CountBeforeAddition = list.Count();
+            await ApiHelper.CreateTodo("false", "deeeee" , "elias");
+
+            var list2 = await ApiHelper.GetAllTodos();
+            var CountAfterAddition = list2.Count();
+            Assert.AreEqual(CountBeforeAddition+ 1, CountAfterAddition);
+        }
+
+        
     }
 }

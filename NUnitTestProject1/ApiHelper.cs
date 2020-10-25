@@ -27,9 +27,9 @@ namespace NUnitTestProject1
 
 
                     var studentLst = xdoc.Descendants("todo").Select(d =>
-                      new {
-                          id = d.Element("id").Value,
-                          doneStatus = d.Element("doneStatus").Value,
+                      new Todo {
+                          id = Int32.Parse(d.Element("id").Value),
+                          doneStatus = bool.Parse(d.Element("doneStatus").Value),
                           title = d.Element("title").Value,
                           description = d.Element("description").Value
                       }).ToList();
@@ -41,6 +41,17 @@ namespace NUnitTestProject1
                     return Enumerable.Empty<Object>();
                 }
             }
+
+        }
+   
+        public async static Task CreateTodo(string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync("http://localhost:4567/todos", stringContent);
 
         }
     }
