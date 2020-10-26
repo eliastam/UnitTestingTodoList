@@ -15,16 +15,14 @@ namespace NUnitTestProject1
     {
 
         public static HttpClient ApiClient { get; set; } = new HttpClient();
-        public async static Task<int> GetAnId()
-        {
-            var id = 0;
-            var list = await GetAllCategories();
-            if (list.Any())
-            {
-                id = list.First().id;
-            }
-            return id;
-        }
+        #region todos
+        #region /todos
+
+
+
+
+        #endregion
+        #endregion
         public async static Task<IEnumerable<Object>> GetAllTodos()
         {
             using (var client = new HttpClient())
@@ -55,7 +53,18 @@ namespace NUnitTestProject1
             }
 
         }
+        public async static Task<HttpResponseMessage> GetTodos()
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync("http://localhost:4567/todos").Result;
 
+                return response;
+           
+            }
+
+        }
         public async static Task CreateTodo(string doneStatus, string description, string title)
         {
             var httpClient = new HttpClient();
@@ -67,6 +76,37 @@ namespace NUnitTestProject1
 
         }
 
+        public async static Task<HttpResponseMessage> PutTodo(string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var response = await httpClient.PutAsync("http://localhost:4567/todos", stringContent);
+            return response;
+        }
+        public async static Task<HttpResponseMessage> PatchTodo(string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var response = await httpClient.PatchAsync("http://localhost:4567/todos", stringContent);
+            return response;
+        }
+        #region Categories
+        public async static Task<int> GetAnId()
+        {
+            var id = 0;
+            var list = await GetAllCategories();
+            if (list.Any())
+            {
+                id = list.First().id;
+            }
+            return id;
+        }
         #region /categroy
         public async static Task<HttpResponseMessage> GetCategories()
         {
@@ -460,6 +500,8 @@ namespace NUnitTestProject1
             var respone = await httpClient.PatchAsync($"http://localhost:4567/categories/{categoryId}/todos/{todoId}", stringContent);
             return respone;
         }
+        #endregion
+
         #endregion
     }
 }

@@ -11,7 +11,8 @@ using System.Xml.Serialization;
 
 namespace NUnitTestProject1
 {
-    public class Tests
+    public class TestTodo
+
     {
         HttpClient client = new HttpClient();
 
@@ -21,11 +22,11 @@ namespace NUnitTestProject1
         }
 
         [Test]
-        public async Task  Test1()
+        public async Task TestGetTodo()
         {
-            var list = await ApiHelper.GetAllTodos();
-
-            Assert.AreEqual(list.Count(), list.Count());
+            var response = await ApiHelper.GetTodos();
+       
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Test]
@@ -40,6 +41,25 @@ namespace NUnitTestProject1
             Assert.AreEqual(CountBeforeAddition+ 1, CountAfterAddition);
         }
 
-        
+       
+
+        [Test]
+        public async Task TestPutTodo()
+        {
+           var response =  await ApiHelper.PutTodo("false", "deeeee", "elias");
+
+
+            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        }
+
+        [Test]
+        public async Task TestPatchTodo()
+        {
+            var response = await ApiHelper.PatchTodo("false", "deeeee", "elias");
+
+
+            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        }
+
     }
 }
