@@ -16,14 +16,18 @@ namespace NUnitTestProject1
 
         public static HttpClient ApiClient { get; set; } = new HttpClient();
         #region todos
+        public async static Task<int> GetATodoId()
+        {
+            var id = 0;
+            var list = await GetAllTodos();
+            if (list.Any())
+            {
+                id = list.First().id;
+            }
+            return id;
+        }
         #region /todos
-
-
-
-
-        #endregion
-        #endregion
-        public async static Task<IEnumerable<Object>> GetAllTodos()
+        public async static Task<IEnumerable<Todo>> GetAllTodos()
         {
             using (var client = new HttpClient())
             {
@@ -48,7 +52,7 @@ namespace NUnitTestProject1
                 }
                 else
                 {
-                    return Enumerable.Empty<Object>();
+                    return Enumerable.Empty<Todo>();
                 }
             }
 
@@ -61,11 +65,11 @@ namespace NUnitTestProject1
                 var response = client.GetAsync("http://localhost:4567/todos").Result;
 
                 return response;
-           
+
             }
 
         }
-        public async static Task CreateTodo(string doneStatus, string description, string title)
+        public async static Task<HttpResponseMessage> CreateTodo(string doneStatus, string description, string title)
         {
             var httpClient = new HttpClient();
             var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
@@ -73,6 +77,7 @@ namespace NUnitTestProject1
 
             var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
             var respone = await httpClient.PostAsync("http://localhost:4567/todos", stringContent);
+            return respone;
 
         }
 
@@ -96,6 +101,638 @@ namespace NUnitTestProject1
             var response = await httpClient.PatchAsync("http://localhost:4567/todos", stringContent);
             return response;
         }
+
+        public async static Task<HttpResponseMessage> DeleteTodo()
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync("http://localhost:4567/todos").Result;
+
+                return response;
+
+            }
+
+        }
+        #endregion
+
+        #region /todos/id
+        public async static Task<HttpResponseMessage> GetTodosId(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/todos/{id}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> GetTodosId(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/todos/{id}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> PostTodoId(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/todos/{id}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PostTodoId(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/todos/{id}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PutTodoId(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/todos/{id}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PutTodoId(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/todos/{id}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PatchTodoId(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/todos/{id}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PatchTodoId(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/todos/{id}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> DeleteTodosId(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/todos/{id}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> DeleteTodosId(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/todos/{id}").Result;
+
+                return response;
+
+            }
+
+        }
+        #endregion
+
+
+        #region /todos/:id/tasksof
+
+        public async static Task<HttpResponseMessage> GetTodosIdTaskof(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/todos/{id}/tasksof").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> GetTodosIdTaskof(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/todos/{id}/tasksof").Result;
+
+                return response;
+
+            }
+
+        }
+
+        public async static Task<HttpResponseMessage> PutTodoIdTaskof(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/todos/{id}/tasksof", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PutTodoIdTaskof(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/todos/{id}/tasksof", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PatchTodoIdTaskof(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/todos/{id}/tasksof", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PatchTodoIdTaskof(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/todos/{id}/tasksof", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PostTodoIdTaskof(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/todos/{id}/tasksof", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PostTodoIdTaskof(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/todos/{id}/tasksof", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> DeleteTodosIdTaskof(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/todos/{id}/tasksof").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> DeleteTodosIdTaskof(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/todos/{id}/tasksof").Result;
+
+                return response;
+
+            }
+
+        }
+
+
+        #endregion
+
+        #region /todos/:id/taskof/:id
+
+        public async static Task<HttpResponseMessage> GetTodosIdTaskofId(int id, int id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> GetTodosIdTaskofId(string id, string id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+
+        public async static Task<HttpResponseMessage> PutTodoIdTaskofId(int id, int id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PutTodoIdTaskofId(string id, string id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PatchTodoIdTaskofId(int id, int id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PatchTodoIdTaskofId(string id, string id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PostTodoIdTaskofId(int id, int id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PostTodoIdTaskofId(string id, string id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> DeleteTodosIdTaskofId(int id, int id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> DeleteTodosIdTaskofId(string id, string id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+
+
+
+        #endregion
+
+        #region /todos/:id/category
+        public async static Task<HttpResponseMessage> GetTodosIdCategory(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/todos/{id}/categories").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> GetTodosIdCategory(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/todos/{id}/categories").Result;
+
+                return response;
+
+            }
+
+        }
+
+        public async static Task<HttpResponseMessage> PutTodoIdCategory(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/todos/{id}/categories", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PutTodoIdCategory(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/todos/{id}/categories", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PatchTodoIdCategory(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/todos/{id}/categories", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PatchTodoIdCategory(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/todos/{id}/categories", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PostTodoIdCategory(int id, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<category><description/><title>{title}</title></category>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/todos/{id}/categories", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PostTodoIdCategory(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/todos/{id}/categories", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> DeleteTodosIdCategory(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/todos/{id}/categories").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> DeleteTodosIdCategory(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/todos/{id}/categories").Result;
+
+                return response;
+
+            }
+
+        }
+
+        #endregion
+
+        #region /todos/:id/category/:id
+
+        public async static Task<HttpResponseMessage> GetTodosIdCategoryId(int id, int id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> GetTodosIdCategoryId(string id, string id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+
+        public async static Task<HttpResponseMessage> PutTodoIdCategoryId(int id, int id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PutTodoIdCategoryId(string id, string id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PatchTodoIdCategoryId(int id, int id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PatchTodoIdCategoryId(string id, string id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<todo><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></todo>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PostTodoIdCategoryId(int id, int id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PostTodoIdCategoryId(string id, string id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> DeleteTodosIdCategoryId(int id, int id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> DeleteTodosIdCategoryId(string id, string id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/todos/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+
+
+
+        #endregion
+
+        #endregion
         #region Categories
         public async static Task<int> GetAnId()
         {
@@ -401,7 +1038,7 @@ namespace NUnitTestProject1
         public async static Task<HttpResponseMessage> GetCategoryIdTodos(int categoryId)
         {
             var httpClient = new HttpClient();
-           
+
             var respone = await httpClient.GetAsync($"http://localhost:4567/categories/{categoryId}/todos");
             return respone;
         }
