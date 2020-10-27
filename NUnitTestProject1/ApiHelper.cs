@@ -1140,5 +1140,481 @@ namespace NUnitTestProject1
         #endregion
 
         #endregion
+
+
+        #region projects
+       
+      
+        public async static Task<int> GetAProjectId()
+        {
+            var id = 0;
+            var list = await GetAllProjects();
+            if (list.Any())
+            {
+                id = list.First().id;
+            }
+            return id;
+        }
+        #region /projects
+        public async static Task<IEnumerable<Project>> GetAllProjects()
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                HttpResponseMessage response = client.GetAsync("http://localhost:4567/projects").Result;
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    XDocument xdoc = XDocument.Parse(response.Content.ReadAsStringAsync().Result);
+
+
+                    var studentLst = xdoc.Descendants("project").Select(d =>
+                      new Project
+                      {
+                          id = Int32.Parse(d.Element("id").Value),
+                          active = bool.Parse(d.Element("active").Value),
+                          completed = bool.Parse(d.Element("active").Value),
+                          title = d.Element("title").Value,
+                          description = d.Element("description").Value
+                      }).ToList();
+
+                    return studentLst;
+                }
+                else
+                {
+                    return Enumerable.Empty<Project>();
+                }
+            }
+
+        }
+        public async static Task<HttpResponseMessage> GetProjects()
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync("http://localhost:4567/projects").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> CreateProject(string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync("http://localhost:4567/projects", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PutProject(string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var response = await httpClient.PutAsync("http://localhost:4567/projects", stringContent);
+            return response;
+        }
+        public async static Task<HttpResponseMessage> PatchProject(string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var response = await httpClient.PatchAsync("http://localhost:4567/projects", stringContent);
+            return response;
+        }
+
+        public async static Task<HttpResponseMessage> DeleteProject()
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync("http://localhost:4567/projects").Result;
+
+                return response;
+
+            }
+
+        }
+        #endregion
+
+
+        #region /projects/id
+        public async static Task<HttpResponseMessage> GetProjectsId(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/projects/{id}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> GetProjectsId(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/projects/{id}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> PostProjectId(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description/><completed>false</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/projects/{id}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PostProjectId(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description/><completed>false</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/projects/{id}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PutProjectId(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description/><completed>false</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/projects/{id}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PutProjectId(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description/><completed>false</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/projects/{id}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PatchProjectId(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description/><completed>false</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/projects/{id}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PatchProjectId(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description/><completed>false</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/projects/{id}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> DeleteProjectsId(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/projects/{id}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> DeleteProjectsId(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/projects/{id}").Result;
+
+                return response;
+
+            }
+
+        }
+        #endregion
+
+
+      
+
+        #region /projects/:id/category
+        public async static Task<HttpResponseMessage> GetProjectsIdCategory(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/projects/{id}/categories").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> GetProjectsIdCategory(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/projects/{id}/categories").Result;
+
+                return response;
+
+            }
+
+        }
+
+        public async static Task<HttpResponseMessage> PutProjectIdCategory(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/projects/{id}/categories", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PutProjectIdCategory(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/projects/{id}/categories", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PatchProjectIdCategory(int id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/projects/{id}/categories", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PatchProjectIdCategory(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/projects/{id}/categories", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PostProjectIdCategory(int id, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<category><description/><title>{title}</title></category>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/projects/{id}/categories", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PostProjectIdCategory(string id, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/projects/{id}/categories", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> DeleteProjectsIdCategory(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/projects/{id}/categories").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> DeleteProjectsIdCategory(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/projects/{id}/categories").Result;
+
+                return response;
+
+            }
+
+        }
+
+        #endregion
+
+        #region /projects/:id/category/:id
+
+        public async static Task<HttpResponseMessage> GetProjectsIdCategoryId(int id, int id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/projects/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> GetProjectsIdCategoryId(string id, string id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.GetAsync($"http://localhost:4567/projects/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+
+        public async static Task<HttpResponseMessage> PutProjectIdCategoryId(int id, int id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description/><completed>false</completed><title/></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/projects/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PutProjectIdCategoryId(string id, string id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PutAsync($"http://localhost:4567/projects/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PatchProjectIdCategoryId(int id, int id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/projects/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PatchProjectIdCategoryId(string id, string id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><doneStatus>{doneStatus}</doneStatus><description>{description}</description><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PatchAsync($"http://localhost:4567/projects/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> PostProjectIdCategoryId(int id, int id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/projects/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+        public async static Task<HttpResponseMessage> PostProjectIdCategoryId(string id, string id2, string doneStatus, string description, string title)
+        {
+            var httpClient = new HttpClient();
+            var someXmlString = $"<project><active>{doneStatus}</active><description></description><completed>{doneStatus}</completed><title>{title}</title></project>";
+
+
+            var stringContent = new StringContent(someXmlString, Encoding.UTF8, "application/xml");
+            var respone = await httpClient.PostAsync($"http://localhost:4567/projects/{id}/tasksof/{id2}", stringContent);
+            return respone;
+
+        }
+
+        public async static Task<HttpResponseMessage> DeleteProjectsIdCategoryId(int id, int id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/projects/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+        public async static Task<HttpResponseMessage> DeleteProjectsIdCategoryId(string id, string id2)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                var response = client.DeleteAsync($"http://localhost:4567/projects/{id}/tasksof/{id2}").Result;
+
+                return response;
+
+            }
+
+        }
+
+
+
+        #endregion
+        #endregion
     }
 }
