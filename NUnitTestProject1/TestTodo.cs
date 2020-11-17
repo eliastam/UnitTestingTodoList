@@ -1,3 +1,4 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Linq;
@@ -11,680 +12,688 @@ using System.Xml.Serialization;
 
 namespace NUnitTestProject1
 {
+    [TestClass]
     public class TestTodo
 
     {
         HttpClient client = new HttpClient();
 
-        [SetUp]
-        public void Setup()
-        {
-        }
+  
         #region Todo
-        [Test]
+        [TestInitialize]
+        public void TestCaseExecuting()
+        {
+            ServerManager.start();
+        }
+        [TestCleanup]
+        public void TestCaseExecuted()
+        {
+
+        }
+        [TestMethod]
         public async Task TestGetTodo()
         {
             var response = await ApiHelper.GetTodos();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            NUnit.Framework.Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
 
-        [Test]
-        public async Task TestCreateATodo()
-        {
-            var list = await ApiHelper.GetAllTodos();
-            var CountBeforeAddition = list.Count();
-            await ApiHelper.CreateTodo("false", "deeeee", "elias");
-
-            var list2 = await ApiHelper.GetAllTodos();
-            var CountAfterAddition = list2.Count();
-            Assert.AreEqual(CountBeforeAddition + 1, CountAfterAddition);
-        }
-        [Test]
-        public async Task TestCreateATodoWithTitleEqualsToEmptyString()
-        {
-
-            var response = await ApiHelper.CreateTodo("false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-
-        }
-        [Test]
-        public async Task TestCreateATodoWithTitleEqualsToNull()
-        {
-
-            var response = await ApiHelper.CreateTodo("false", "deeeee", null);
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestCreateATodo()
+        //{
+        //    var list = await ApiHelper.GetAllTodos();
+        //    var CountBeforeAddition = list.Count();
+        //    await ApiHelper.CreateTodo("false", "deeeee", "elias");
 
-        [Test]
-        public async Task TestCreateATodoWithDoneStuatusToNotBeBool()
-        {
+        //    var list2 = await ApiHelper.GetAllTodos();
+        //    var CountAfterAddition = list2.Count();
+        //    Assert.AreEqual(CountBeforeAddition + 1, CountAfterAddition);
+        //}
+        //[TestMethod]
+        //public async Task TestCreateATodoWithTitleEqualsToEmptyString()
+        //{
 
-            var response = await ApiHelper.CreateTodo("#$NotBoolForsure", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        }
-
-        [Test]
-        public async Task TestCreateATodoWithNoDescription()
-        {
+        //    var response = await ApiHelper.CreateTodo("false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-            var response = await ApiHelper.CreateTodo("false", "", "title");
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-        }
+        //}
+        //[TestMethod]
+        //public async Task TestCreateATodoWithTitleEqualsToNull()
+        //{
 
-        [Test]
-        public async Task TestCreateATodoWithDoneStuatusToNotBeTrue()
-        {
-
-            var response = await ApiHelper.CreateTodo("true", "description", "title");
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-        }
+        //    var response = await ApiHelper.CreateTodo("false", "deeeee", null);
+        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        //}
 
+        //[TestMethod]
+        //public async Task TestCreateATodoWithDoneStuatusToNotBeBool()
+        //{
 
-        [Test]
-        public async Task TestPutTodo()
-        {
-            var response = await ApiHelper.PutTodo("false", "deeeee", "elias");
+        //    var response = await ApiHelper.CreateTodo("#$NotBoolForsure", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        //}
 
+        //[TestMethod]
+        //public async Task TestCreateATodoWithNoDescription()
+        //{
 
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //    var response = await ApiHelper.CreateTodo("false", "", "title");
+        //    Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPatchTodo()
-        {
-            var response = await ApiHelper.PatchTodo("false", "deeeee", "elias");
+        //[TestMethod]
+        //public async Task TestCreateATodoWithDoneStuatusToNotBeTrue()
+        //{
 
+        //    var response = await ApiHelper.CreateTodo("true", "description", "title");
+        //    Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+        //}
 
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
 
-        [Test]
-        public async Task TestDeleteTodo()
-        {
-            var response = await ApiHelper.DeleteTodo();
+        //[TestMethod]
+        //public async Task TestPutTodo()
+        //{
+        //    var response = await ApiHelper.PutTodo("false", "deeeee", "elias");
 
 
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
-        #endregion
-
-        #region Todo/id
-        [Test]
-        public async Task TestGetTodoId_ExistedAndIntegerId()
-        {
-            var response = await ApiHelper.GetTodosId(await ApiHelper.GetATodoId());
-
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        }
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestGetTodoId_NotExistedAndIntegerId()
-        {
-            var response = await ApiHelper.GetTodosId(0);
+        //[TestMethod]
+        //public async Task TestPatchTodo()
+        //{
+        //    var response = await ApiHelper.PatchTodo("false", "deeeee", "elias");
 
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-        }
 
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestGetTodoId_NotIntegerId()
-        {
-            var response = await ApiHelper.GetTodosId("not Integer");
+        //[TestMethod]
+        //public async Task TestDeleteTodo()
+        //{
+        //    var response = await ApiHelper.DeleteTodo();
 
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-        }
 
-        [Test]
-        public async Task TestPostTodoIdSuccessful()
-        {
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
+        //#endregion
 
-            var response = await ApiHelper.PostTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //#region Todo/id
+        //[TestMethod]
+        //public async Task TestGetTodoId_ExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.GetTodosId(await ApiHelper.GetATodoId());
 
-        }
-        [Test]
-        public async Task TestPostTodoIdNotexistedId()
-        {
+        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //}
 
-            var response = await ApiHelper.PostTodoId(0, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        //[TestMethod]
+        //public async Task TestGetTodoId_NotExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.GetTodosId(0);
 
-        }
-        [Test]
-        public async Task TestPostTodoIdExistedIdWithNoTitle()
-        {
+        //    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        //}
 
-            var response = await ApiHelper.PostTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        }
+        //[TestMethod]
+        //public async Task TestGetTodoId_NotIntegerId()
+        //{
+        //    var response = await ApiHelper.GetTodosId("not Integer");
 
-        [Test]
-        public async Task TestPostTodoIdExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PostTodoId(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        }
+        //    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPutTodoIdSuccessful()
-        {
+        //[TestMethod]
+        //public async Task TestPostTodoIdSuccessful()
+        //{
 
-            var response = await ApiHelper.PutTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //    var response = await ApiHelper.PostTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPutTodoIdNotexistedId()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPostTodoIdNotexistedId()
+        //{
 
-            var response = await ApiHelper.PutTodoId(0, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        //    var response = await ApiHelper.PostTodoId(0, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPutTodoIdExistedIdWithNoTitle()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPostTodoIdExistedIdWithNoTitle()
+        //{
 
-            var response = await ApiHelper.PutTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        //    var response = await ApiHelper.PostTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        }
+        //}
 
-        [Test]
-        public async Task TestPutTodoIdExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PutTodoId(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPostTodoIdExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PostTodoId(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPatchTodoIdSuccessful()
-        {
+        //[TestMethod]
+        //public async Task TestPutTodoIdSuccessful()
+        //{
 
-            var response = await ApiHelper.PatchTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPatchTodoIdNotexistedId()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPutTodoIdNotexistedId()
+        //{
 
-            var response = await ApiHelper.PatchTodoId(0, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoId(0, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPatchTodoIdExistedIdWithNoTitle()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPutTodoIdExistedIdWithNoTitle()
+        //{
 
-            var response = await ApiHelper.PatchTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        }
+        //}
 
-        [Test]
-        public async Task TestPatchTodoIdExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PatchTodoId(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPutTodoIdExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PutTodoId(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestDeleteTodoId_ExistedAndIntegerId()
-        {
-            var response = await ApiHelper.DeleteTodosId(await ApiHelper.GetATodoId());
+        //[TestMethod]
+        //public async Task TestPatchTodoIdSuccessful()
+        //{
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        }
+        //    var response = await ApiHelper.PatchTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        [Test]
-        public async Task TestDeleteTodoId_NotExistedAndIntegerId()
-        {
-            var response = await ApiHelper.DeleteTodosId(0);
+        //}
+        //[TestMethod]
+        //public async Task TestPatchTodoIdNotexistedId()
+        //{
 
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        //    var response = await ApiHelper.PatchTodoId(0, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        [Test]
-        public async Task TestDeleteTodoId_NotIntegerId()
-        {
-            var response = await ApiHelper.DeleteTodosId("not Integer");
+        //}
+        //[TestMethod]
+        //public async Task TestPatchTodoIdExistedIdWithNoTitle()
+        //{
 
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        //    var response = await ApiHelper.PatchTodoId(await ApiHelper.GetATodoId(), "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        #endregion
+        //}
 
-        #region /todos/:id/tasksof
-        [Test]
-        public async Task TestGetTodoIdTaskof_ExistedAndIntegerId()
-        {
-            var response = await ApiHelper.GetTodosIdTaskof(await ApiHelper.GetATodoId());
+        //[TestMethod]
+        //public async Task TestPatchTodoIdExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PatchTodoId(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestDeleteTodoId_ExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.DeleteTodosId(await ApiHelper.GetATodoId());
 
-        [Test]
-        public async Task TestGetTodoIdTaskof_NotExistedAndIntegerId()
-        {
-            var response = await ApiHelper.GetTodosIdTaskof(0);
+        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //}
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestDeleteTodoId_NotExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.DeleteTodosId(0);
 
-        [Test]
-        public async Task TestGetTodoIdTaskof_NotIntegerId()
-        {
-            var response = await ApiHelper.GetTodosIdTaskof("not Integer");
+        //    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        //}
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestDeleteTodoId_NotIntegerId()
+        //{
+        //    var response = await ApiHelper.DeleteTodosId("not Integer");
 
-        [Test]
-        public async Task TestPutTodoIdTaskofSuccessful()
-        {
+        //    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        //}
 
-            var response = await ApiHelper.PutTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //#endregion
 
-        }
-        [Test]
-        public async Task TestPutTodoIdTaskofNotexistedId()
-        {
+        //#region /todos/:id/tasksof
+        //[TestMethod]
+        //public async Task TestGetTodoIdTaskof_ExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.GetTodosIdTaskof(await ApiHelper.GetATodoId());
 
-            var response = await ApiHelper.PutTodoIdTaskof(0, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //}
 
-        }
-        [Test]
-        public async Task TestPutTodoIdTaskofExistedIdWithNoTitle()
-        {
+        //[TestMethod]
+        //public async Task TestGetTodoIdTaskof_NotExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.GetTodosIdTaskof(0);
 
-            var response = await ApiHelper.PutTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //}
+
+        //[TestMethod]
+        //public async Task TestGetTodoIdTaskof_NotIntegerId()
+        //{
+        //    var response = await ApiHelper.GetTodosIdTaskof("not Integer");
+
+        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //}
+
+        //[TestMethod]
+        //public async Task TestPutTodoIdTaskofSuccessful()
+        //{
+
+        //    var response = await ApiHelper.PutTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+
+        //}
+        //[TestMethod]
+        //public async Task TestPutTodoIdTaskofNotexistedId()
+        //{
+
+        //    var response = await ApiHelper.PutTodoIdTaskof(0, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+
+        //}
+        //[TestMethod]
+        //public async Task TestPutTodoIdTaskofExistedIdWithNoTitle()
+        //{
+
+        //    var response = await ApiHelper.PutTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
+        //}
 
-        [Test]
-        public async Task TestPutTodoIdTaskofExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PutTodoIdTaskof(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPutTodoIdTaskofExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PutTodoIdTaskof(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPatchTodoIdTaskofSuccessful()
-        {
+        //[TestMethod]
+        //public async Task TestPatchTodoIdTaskofSuccessful()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPatchTodoIdTaskofNotexistedId()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPatchTodoIdTaskofNotexistedId()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdTaskof(0, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdTaskof(0, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPatchTodoIdTaskofExistedIdWithNoTitle()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPatchTodoIdTaskofExistedIdWithNoTitle()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
+        //}
 
-        [Test]
-        public async Task TestPatchTodoIdTaskofExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PatchTodoIdTaskof(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPatchTodoIdTaskofExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PatchTodoIdTaskof(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPostTodoIdTaskofSuccessful()
-        {
+        //[TestMethod]
+        //public async Task TestPostTodoIdTaskofSuccessful()
+        //{
 
-            var response = await ApiHelper.PostTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+        //    var response = await ApiHelper.PostTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPostTodoIdTaskofNotexistedId()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPostTodoIdTaskofNotexistedId()
+        //{
 
-            var response = await ApiHelper.PostTodoIdTaskof(0, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        //    var response = await ApiHelper.PostTodoIdTaskof(0, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPostTodoIdTaskofExistedIdWithNoTitle()
-        {
-            var response = await ApiHelper.PostTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-        }
+        //}
+        //[TestMethod]
+        //public async Task TestPostTodoIdTaskofExistedIdWithNoTitle()
+        //{
+        //    var response = await ApiHelper.PostTodoIdTaskof(await ApiHelper.GetATodoId(), "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPostTodoIdTaskofExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PostTodoIdTaskof(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPostTodoIdTaskofExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PostTodoIdTaskof(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestDeleteTodoIdTaskof_ExistedAndIntegerId()
-        {
-            var response = await ApiHelper.DeleteTodosIdTaskof(await ApiHelper.GetATodoId());
+        //[TestMethod]
+        //public async Task TestDeleteTodoIdTaskof_ExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.DeleteTodosIdTaskof(await ApiHelper.GetATodoId());
 
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestDeleteTodoIdTaskof_NotExistedAndIntegerId()
-        {
-            var response = await ApiHelper.DeleteTodosIdTaskof(0);
+        //[TestMethod]
+        //public async Task TestDeleteTodoIdTaskof_NotExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.DeleteTodosIdTaskof(0);
 
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestDeleteTodoIdTaskof_NotIntegerId()
-        {
-            var response = await ApiHelper.DeleteTodosIdTaskof("not Integer");
+        //[TestMethod]
+        //public async Task TestDeleteTodoIdTaskof_NotIntegerId()
+        //{
+        //    var response = await ApiHelper.DeleteTodosIdTaskof("not Integer");
 
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        #endregion
+        //#endregion
 
-        #region /todos/:id/tasksof/:id
+        //#region /todos/:id/tasksof/:id
 
 
-        [Test]
-        public async Task TestPutTodoIdTaskofIdSuccessful()
-        {
+        //[TestMethod]
+        //public async Task TestPutTodoIdTaskofIdSuccessful()
+        //{
 
-            var response = await ApiHelper.PutTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPutTodoIdTaskofIdNotexistedId()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPutTodoIdTaskofIdNotexistedId()
+        //{
 
-            var response = await ApiHelper.PutTodoIdTaskofId(0, 1, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoIdTaskofId(0, 1, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPutTodoIdTaskofIdExistedIdWithNoTitle()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPutTodoIdTaskofIdExistedIdWithNoTitle()
+        //{
 
-            var response = await ApiHelper.PutTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
+        //}
 
-        [Test]
-        public async Task TestPutTodoIdTaskofIdExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PutTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPutTodoIdTaskofIdExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PutTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPatchTodoIdTaskofIdSuccessful()
-        {
+        //[TestMethod]
+        //public async Task TestPatchTodoIdTaskofIdSuccessful()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPatchTodoIdTaskofIdNotexistedId()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPatchTodoIdTaskofIdNotexistedId()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdTaskofId(0, 1, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdTaskofId(0, 1, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPatchTodoIdTaskofIdExistedIdWithNoTitle()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPatchTodoIdTaskofIdExistedIdWithNoTitle()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
+        //}
 
-        [Test]
-        public async Task TestPatchTodoIdTaskofIdExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PatchTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPatchTodoIdTaskofIdExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PatchTodoIdTaskofId(await ApiHelper.GetATodoId(), 1, "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
 
 
 
-        #endregion
+        //#endregion
 
-        #region /todos/:id/category
-        [Test]
-        public async Task TestGetTodoIdCategory_ExistedAndIntegerId()
-        {
-            var response = await ApiHelper.GetTodosIdCategory(await ApiHelper.GetATodoId());
+        //#region /todos/:id/category
+        //[TestMethod]
+        //public async Task TestGetTodoIdCategory_ExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.GetTodosIdCategory(await ApiHelper.GetATodoId());
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        }
+        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestGetTodoIdCategory_NotExistedAndIntegerId()
-        {
-            var response = await ApiHelper.GetTodosIdCategory(0);
+        //[TestMethod]
+        //public async Task TestGetTodoIdCategory_NotExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.GetTodosIdCategory(0);
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        }
+        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestGetTodoIdCategory_NotIntegerId()
-        {
-            var response = await ApiHelper.GetTodosIdCategory("not Integer");
+        //[TestMethod]
+        //public async Task TestGetTodoIdCategory_NotIntegerId()
+        //{
+        //    var response = await ApiHelper.GetTodosIdCategory("not Integer");
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        }
+        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPutTodoIdCategorySuccessful()
-        {
+        //[TestMethod]
+        //public async Task TestPutTodoIdCategorySuccessful()
+        //{
 
-            var response = await ApiHelper.PutTodoIdCategory(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoIdCategory(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPutTodoIdCategoryNotexistedId()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPutTodoIdCategoryNotexistedId()
+        //{
 
-            var response = await ApiHelper.PutTodoIdCategory(0, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoIdCategory(0, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPutTodoIdCategoryExistedIdWithNoTitle()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPutTodoIdCategoryExistedIdWithNoTitle()
+        //{
 
-            var response = await ApiHelper.PutTodoIdCategory(await ApiHelper.GetATodoId(), "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoIdCategory(await ApiHelper.GetATodoId(), "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
+        //}
 
-        [Test]
-        public async Task TestPutTodoIdCategoryExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PutTodoIdCategory(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPutTodoIdCategoryExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PutTodoIdCategory(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPatchTodoIdCategorySuccessful()
-        {
+        //[TestMethod]
+        //public async Task TestPatchTodoIdCategorySuccessful()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdCategory(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdCategory(await ApiHelper.GetATodoId(), "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPatchTodoIdCategoryNotexistedId()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPatchTodoIdCategoryNotexistedId()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdCategory(0, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdCategory(0, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPatchTodoIdCategoryExistedIdWithNoTitle()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPatchTodoIdCategoryExistedIdWithNoTitle()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdCategory(await ApiHelper.GetATodoId(), "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdCategory(await ApiHelper.GetATodoId(), "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
+        //}
 
-        [Test]
-        public async Task TestPatchTodoIdCategoryExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PatchTodoIdCategory(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPatchTodoIdCategoryExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PatchTodoIdCategory(await ApiHelper.GetATodoId(), "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPostTodoIdCategorySuccessful()
-        {
+        //[TestMethod]
+        //public async Task TestPostTodoIdCategorySuccessful()
+        //{
 
-            var response = await ApiHelper.PostTodoIdCategory(await ApiHelper.GetATodoId(), "title");
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+        //    var response = await ApiHelper.PostTodoIdCategory(await ApiHelper.GetATodoId(), "title");
+        //    Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPostTodoIdCategoryNotexistedId()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPostTodoIdCategoryNotexistedId()
+        //{
 
-            var response = await ApiHelper.PostTodoIdCategory(0, "title");
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        //    var response = await ApiHelper.PostTodoIdCategory(0, "title");
+        //    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPostTodoIdCategoryExistedIdWithNoTitle()
-        {
-            var response = await ApiHelper.PostTodoIdCategory(await ApiHelper.GetATodoId(), "");
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        }
+        //}
+        //[TestMethod]
+        //public async Task TestPostTodoIdCategoryExistedIdWithNoTitle()
+        //{
+        //    var response = await ApiHelper.PostTodoIdCategory(await ApiHelper.GetATodoId(), "");
+        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPostTodoIdCategoryExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PostTodoIdCategory(await ApiHelper.GetATodoId(), "");
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPostTodoIdCategoryExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PostTodoIdCategory(await ApiHelper.GetATodoId(), "");
+        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestDeleteTodoIdCategory_ExistedAndIntegerId()
-        {
-            var response = await ApiHelper.DeleteTodosIdCategory(await ApiHelper.GetATodoId());
+        //[TestMethod]
+        //public async Task TestDeleteTodoIdCategory_ExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.DeleteTodosIdCategory(await ApiHelper.GetATodoId());
 
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestDeleteTodoIdCategory_NotExistedAndIntegerId()
-        {
-            var response = await ApiHelper.DeleteTodosIdCategory(0);
+        //[TestMethod]
+        //public async Task TestDeleteTodoIdCategory_NotExistedAndIntegerId()
+        //{
+        //    var response = await ApiHelper.DeleteTodosIdCategory(0);
 
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestDeleteTodoIdCategory_NotIntegerId()
-        {
-            var response = await ApiHelper.DeleteTodosIdCategory("not Integer");
+        //[TestMethod]
+        //public async Task TestDeleteTodoIdCategory_NotIntegerId()
+        //{
+        //    var response = await ApiHelper.DeleteTodosIdCategory("not Integer");
 
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        #endregion
+        //#endregion
 
-        #region /todos/:id/category/:id
+        //#region /todos/:id/category/:id
 
 
-        [Test]
-        public async Task TestPutTodoIdCategoryIdSuccessful()
-        {
+        //[TestMethod]
+        //public async Task TestPutTodoIdCategoryIdSuccessful()
+        //{
 
-            var response = await ApiHelper.PutTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPutTodoIdCategoryIdNotexistedId()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPutTodoIdCategoryIdNotexistedId()
+        //{
 
-            var response = await ApiHelper.PutTodoIdCategoryId(0, 1, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoIdCategoryId(0, 1, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPutTodoIdCategoryIdExistedIdWithNoTitle()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPutTodoIdCategoryIdExistedIdWithNoTitle()
+        //{
 
-            var response = await ApiHelper.PutTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PutTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
+        //}
 
-        [Test]
-        public async Task TestPutTodoIdCategoryIdExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PutTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPutTodoIdCategoryIdExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PutTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
-        [Test]
-        public async Task TestPatchTodoIdCategoryIdSuccessful()
-        {
+        //[TestMethod]
+        //public async Task TestPatchTodoIdCategoryIdSuccessful()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPatchTodoIdCategoryIdNotexistedId()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPatchTodoIdCategoryIdNotexistedId()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdCategoryId(0, 1, "false", "deeeee", "title");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdCategoryId(0, 1, "false", "deeeee", "title");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
-        [Test]
-        public async Task TestPatchTodoIdCategoryIdExistedIdWithNoTitle()
-        {
+        //}
+        //[TestMethod]
+        //public async Task TestPatchTodoIdCategoryIdExistedIdWithNoTitle()
+        //{
 
-            var response = await ApiHelper.PatchTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //    var response = await ApiHelper.PatchTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "false", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
 
-        }
+        //}
 
-        [Test]
-        public async Task TestPatchTodoIdCategoryIdExistedIdDonestatusNotBoolean()
-        {
-            var response = await ApiHelper.PatchTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "NOTBool", "deeeee", "");
-            Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestPatchTodoIdCategoryIdExistedIdDonestatusNotBoolean()
+        //{
+        //    var response = await ApiHelper.PatchTodoIdCategoryId(await ApiHelper.GetATodoId(), 1, "NOTBool", "deeeee", "");
+        //    Assert.AreEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        //}
 
 
 
